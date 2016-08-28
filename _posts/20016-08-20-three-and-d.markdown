@@ -5,7 +5,7 @@ date:   2016-08-20 13:38:01 -0600
 categories: NBA draft
 ---
 # Drafting for 3 and D
-### Predicting the best shooters from NCAA production and their height to wingspan ratio.
+## Predicting the best shooters from NCAA production and their height to wingspan ratio.
 
 Watching the draft this year I heard a lot of talk about wingspan and shooting ability. Wingspan and length have always been key attributes for any level of basketball. Long arms are more important than height alone since long arms help in rebounding, contesting shots, deflections, getting steals and just generally making it hard on the offense. Shooting is also very important but 3 point shooting has become even more important in today's modern NBA. Outside of the lottery draft picks, it becomes a crapshoot to try to predict who will be successful.
 
