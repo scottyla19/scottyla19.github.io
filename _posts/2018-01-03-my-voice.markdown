@@ -1,0 +1,1046 @@
+
+
+```python
+from pandas_datareader import data, wb
+import pandas as pd
+import numpy as np
+import datetime
+import seaborn as sns
+import matplotlib.pyplot as plt
+%matplotlib inline
+```
+
+
+```python
+staff = pd.read_csv('staff_my_voice.csv')
+students = pd.read_csv('student_my_voice.csv')
+staff.rename(columns = {'Total in Agreement': 'Total Agree', 'Disagree.1':'Strongly Disagree'}, inplace=True)
+students.rename(columns = {'Total in Agreement': 'Total Agree', 'Disagree.1':'Strongly Disagree'}, inplace=True)
+
+for c in staff.columns[2:-1]:
+    staff[c] = staff[c].str.replace('%', '')
+    staff[c] = staff[c].astype(float)
+    students[c] = students[c].str.replace('%', '')
+    students[c] = students[c].astype(float)
+
+staff.head()
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Category</th>
+      <th>Question</th>
+      <th>Total Agree</th>
+      <th>Strongly Agree</th>
+      <th>Agree</th>
+      <th>Undecided</th>
+      <th>Disagree</th>
+      <th>Strongly Disagree</th>
+      <th>Total Disagree</th>
+      <th>Did Not Answer</th>
+      <th>Total Positive</th>
+      <th>Wording</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Belonging</td>
+      <td>1. I feel valued for my unique skills and talents</td>
+      <td>68.9</td>
+      <td>15.1</td>
+      <td>53.8</td>
+      <td>11.8</td>
+      <td>14.3</td>
+      <td>5.0</td>
+      <td>19.3</td>
+      <td>0.0</td>
+      <td>68.9</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Belonging</td>
+      <td>2. School is a welcoming and friendly place</td>
+      <td>79.0</td>
+      <td>13.4</td>
+      <td>65.5</td>
+      <td>15.1</td>
+      <td>4.2</td>
+      <td>1.7</td>
+      <td>5.9</td>
+      <td>0.0</td>
+      <td>79.0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Belonging</td>
+      <td>3. I am proud of my school</td>
+      <td>82.9</td>
+      <td>32.5</td>
+      <td>50.4</td>
+      <td>9.4</td>
+      <td>6.0</td>
+      <td>1.7</td>
+      <td>7.7</td>
+      <td>1.7</td>
+      <td>82.9</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Belonging</td>
+      <td>4. I think bullying is a problem at my school</td>
+      <td>50.8</td>
+      <td>11.0</td>
+      <td>39.8</td>
+      <td>23.7</td>
+      <td>23.7</td>
+      <td>1.7</td>
+      <td>25.4</td>
+      <td>0.8</td>
+      <td>25.4</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Belonging</td>
+      <td>5. I feel comfortable in the staff room</td>
+      <td>64.4</td>
+      <td>16.1</td>
+      <td>48.3</td>
+      <td>15.3</td>
+      <td>12.7</td>
+      <td>7.6</td>
+      <td>20.3</td>
+      <td>0.8</td>
+      <td>64.4</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+Explanation of the columns in the table above: 
+- Each question has a general 'Category'
+- Total Agree is the sum of Strongly Agree and Agree
+- Total Disagree is the sum of Disagree and Strongly Disagree
+- Wording is 0 for positive (something we want to agree highly) and 1 for negative (statements we would want to disagree with).
+- Total Positive is equal to Total Agree if Wording is positive and Total Disagree if Wording is negative. The higher the better.
+
+## Staff Analysis
+Below you can see the average of total percentage of positive answers for each of the main categories. In general it seems staff has fun, is confident, enjoys support from colleagues. However it seems administration, leadership, and communication could be areas of improvement.
+
+
+```python
+
+catStaff = staff.groupby('Category')
+catStaff['Total Positive'].mean()
+```
+
+
+
+
+    Category
+    Administration and Communication    54.283333
+    Belonging                           63.650000
+    Confidence to Take Action           83.200000
+    Curiosity & Creativity              66.362500
+    Fun & Excitement                    88.742857
+    Heroes                              84.287500
+    Leadership & Responsibility         62.957143
+    Sense of Accomplishment             69.866667
+    Spirit of Adventure                 65.557143
+    Name: Total Positive, dtype: float64
+
+
+
+Below is a list of the questions that were low (<50%) positive  answers. Some things to look into is that majority of staff (50.8%) agree that bullying is a problem while only 25.5% disagree. This is why there is only a 25.4% persent Total Positive amount. Since we would want everyone to agree that bullying is **not** a problem at our school. This is something to look into and so is lack of meaningful professional development #36, lack of effective communication #60, lack of decision making, and lack of administration learning from staff.
+
+
+```python
+posStaff = staff[staff['Total Positive'] < 50.0]
+
+# posStaff.set_index('Question', inplace=True)
+
+posStaff = posStaff.reindex(columns=["Category", "Question", "Total Agree", "Strongly Agree", "Agree", "Undecided", 
+                                     "Disagree", "Strongly Disagree","Did Not Answer", "Total Disagree", "Total Positive",
+                                     "Wording"])
+posStaff.head(len(posStaff))
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Category</th>
+      <th>Question</th>
+      <th>Total Agree</th>
+      <th>Strongly Agree</th>
+      <th>Agree</th>
+      <th>Undecided</th>
+      <th>Disagree</th>
+      <th>Strongly Disagree</th>
+      <th>Did Not Answer</th>
+      <th>Total Disagree</th>
+      <th>Total Positive</th>
+      <th>Wording</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>3</th>
+      <td>Belonging</td>
+      <td>4. I think bullying is a problem at my school</td>
+      <td>50.8</td>
+      <td>11.0</td>
+      <td>39.8</td>
+      <td>23.7</td>
+      <td>23.7</td>
+      <td>1.7</td>
+      <td>0.8</td>
+      <td>25.4</td>
+      <td>25.4</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Belonging</td>
+      <td>6. Building administration makes an effort to ...</td>
+      <td>43.6</td>
+      <td>9.4</td>
+      <td>34.2</td>
+      <td>17.1</td>
+      <td>23.1</td>
+      <td>16.2</td>
+      <td>1.7</td>
+      <td>39.3</td>
+      <td>43.6</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>Sense of Accomplishment</td>
+      <td>21. I am recognized when I try my best</td>
+      <td>44.4</td>
+      <td>7.7</td>
+      <td>36.8</td>
+      <td>24.8</td>
+      <td>25.6</td>
+      <td>5.1</td>
+      <td>1.7</td>
+      <td>30.7</td>
+      <td>44.4</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>Curiosity &amp; Creativity</td>
+      <td>36. Meaningful professional development opport...</td>
+      <td>36.4</td>
+      <td>4.2</td>
+      <td>32.2</td>
+      <td>22.0</td>
+      <td>18.6</td>
+      <td>22.9</td>
+      <td>0.8</td>
+      <td>41.5</td>
+      <td>36.4</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>Curiosity &amp; Creativity</td>
+      <td>37. I feel comfortable asking questions in sta...</td>
+      <td>44.4</td>
+      <td>11.1</td>
+      <td>33.3</td>
+      <td>20.5</td>
+      <td>20.5</td>
+      <td>14.5</td>
+      <td>1.7</td>
+      <td>35.0</td>
+      <td>44.4</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>Spirit of Adventure</td>
+      <td>38. Setting yearly goals with my supervisor is...</td>
+      <td>43.7</td>
+      <td>10.1</td>
+      <td>33.6</td>
+      <td>16.8</td>
+      <td>26.1</td>
+      <td>13.4</td>
+      <td>0.0</td>
+      <td>39.5</td>
+      <td>43.7</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>Spirit of Adventure</td>
+      <td>44. I am excited to tell my colleagues when I ...</td>
+      <td>47.9</td>
+      <td>7.7</td>
+      <td>40.2</td>
+      <td>23.9</td>
+      <td>19.7</td>
+      <td>8.5</td>
+      <td>1.7</td>
+      <td>28.2</td>
+      <td>47.9</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>Leadership &amp; Responsibility</td>
+      <td>46. My colleagues see me as a leader</td>
+      <td>46.2</td>
+      <td>7.6</td>
+      <td>38.7</td>
+      <td>39.5</td>
+      <td>13.4</td>
+      <td>0.8</td>
+      <td>0.0</td>
+      <td>14.2</td>
+      <td>46.2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>Leadership &amp; Responsibility</td>
+      <td>47. I have a voice in decision making at school</td>
+      <td>39.0</td>
+      <td>4.2</td>
+      <td>34.7</td>
+      <td>21.2</td>
+      <td>23.7</td>
+      <td>16.1</td>
+      <td>0.8</td>
+      <td>39.8</td>
+      <td>39.0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>50</th>
+      <td>Leadership &amp; Responsibility</td>
+      <td>51. Building administration is willing to lear...</td>
+      <td>39.3</td>
+      <td>6.8</td>
+      <td>32.5</td>
+      <td>25.6</td>
+      <td>17.9</td>
+      <td>17.1</td>
+      <td>1.7</td>
+      <td>35.0</td>
+      <td>39.3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>53</th>
+      <td>Confidence to Take Action</td>
+      <td>54. I feel confident voicing my honest opinion...</td>
+      <td>46.6</td>
+      <td>5.9</td>
+      <td>40.7</td>
+      <td>18.6</td>
+      <td>22.9</td>
+      <td>11.9</td>
+      <td>0.8</td>
+      <td>34.8</td>
+      <td>46.6</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>59</th>
+      <td>Administration and Communication</td>
+      <td>60. We communicate effectively in our building</td>
+      <td>27.7</td>
+      <td>1.7</td>
+      <td>26.1</td>
+      <td>26.1</td>
+      <td>30.3</td>
+      <td>16.0</td>
+      <td>0.0</td>
+      <td>46.3</td>
+      <td>27.7</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>61</th>
+      <td>Administration and Communication</td>
+      <td>62. Building administration knows my professio...</td>
+      <td>46.6</td>
+      <td>6.9</td>
+      <td>39.7</td>
+      <td>17.2</td>
+      <td>22.4</td>
+      <td>13.8</td>
+      <td>2.5</td>
+      <td>36.2</td>
+      <td>46.6</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# Data to plot
+fig, axes = plt.subplots(7, 2, figsize=(10,20))
+ 
+# Plot
+for i, (idx, row) in enumerate(posStaff.set_index('Question').iterrows()):
+    ax = axes[i // 2, i % 2]
+    perc = row[2:-3]
+    ax.pie(perc, labels=list(row[2:-3].index),autopct='%1.1f%%')
+    ax.set_title(idx)
+fig.delaxes(axes[6,1])
+
+fig.subplots_adjust(wspace=.5)
+```
+
+
+![png](output_7_0.png)
+
+
+## Student Analysis
+Doing a similar analysis for the student data provides more information on the overall thoughts of the students. Below are the breakdowns of each of the categories for the students.
+
+
+
+```python
+catStudent = students.groupby('Category')
+catStudent['Total Positive'].mean()
+
+```
+
+
+
+
+    Category
+    Belonging                      52.250000
+    Confidence to Take Action      72.050000
+    Curiosity & Creativity         60.410000
+    Fun & Excitement               49.100000
+    Heroes                         56.977778
+    Leadership & Responsibility    47.428571
+    Sense of Accomplishment        60.122222
+    Spirit of Adventure            57.514286
+    Name: Total Positive, dtype: float64
+
+
+
+Not a very good prognosis for the students compared to the way the staff feel. Student seem to have high confidence, curiosity, and sense of accomplishment. In general these responses do not seem as positive as the staff. However more of the students chose undecided as there answer compared with the staff. This could influence the outcome either way but it is something for us to make sure students are aware of an for them to be more decisive when taking the survey.
+
+
+```python
+print('Students mean undecided percentage: %{:.2f}.\nStaff mean undecided percentage: %{:.2f}.'.format(students['Undecided'].mean(), staff['Undecided'].mean()))
+```
+
+    Students mean undecided percentage: %25.14.
+    Staff mean undecided percentage: %13.83.
+    
+
+
+```python
+posStudent = students[students['Total Positive'] < 50.0]
+
+# posStaff.set_index('Question', inplace=True)
+
+posStudent = posStudent.reindex(columns=["Category", "Question", "Total Agree", "Strongly Agree", "Agree", "Undecided", 
+                                     "Disagree", "Strongly Disagree","Did Not Answer", "Total Disagree", "Total Positive",
+                                     "Wording"])
+posStudent.head(len(posStudent))
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Category</th>
+      <th>Question</th>
+      <th>Total Agree</th>
+      <th>Strongly Agree</th>
+      <th>Agree</th>
+      <th>Undecided</th>
+      <th>Disagree</th>
+      <th>Strongly Disagree</th>
+      <th>Did Not Answer</th>
+      <th>Total Disagree</th>
+      <th>Total Positive</th>
+      <th>Wording</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2</th>
+      <td>Belonging</td>
+      <td>3. Teachers make an effort to get to know me.</td>
+      <td>47.1</td>
+      <td>10.5</td>
+      <td>36.6</td>
+      <td>32.1</td>
+      <td>15.6</td>
+      <td>5.1</td>
+      <td>0.2</td>
+      <td>20.7</td>
+      <td>47.1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Belonging</td>
+      <td>5. Teachers care about my problems and feelings.</td>
+      <td>38.5</td>
+      <td>7.1</td>
+      <td>31.4</td>
+      <td>40.0</td>
+      <td>14.7</td>
+      <td>6.8</td>
+      <td>1.0</td>
+      <td>21.5</td>
+      <td>38.5</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Belonging</td>
+      <td>7. I am a valued member of my school community.</td>
+      <td>37.9</td>
+      <td>7.5</td>
+      <td>30.4</td>
+      <td>36.1</td>
+      <td>18.1</td>
+      <td>7.8</td>
+      <td>1.1</td>
+      <td>25.9</td>
+      <td>37.9</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Belonging</td>
+      <td>8. I think bullying is a problem at my school.</td>
+      <td>27.7</td>
+      <td>8.7</td>
+      <td>19.0</td>
+      <td>32.9</td>
+      <td>30.3</td>
+      <td>9.0</td>
+      <td>1.6</td>
+      <td>39.3</td>
+      <td>39.3</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Heroes</td>
+      <td>13. Teachers care if I am absent from school.</td>
+      <td>47.0</td>
+      <td>10.3</td>
+      <td>36.7</td>
+      <td>30.7</td>
+      <td>16.2</td>
+      <td>6.1</td>
+      <td>1.2</td>
+      <td>22.3</td>
+      <td>47.0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Heroes</td>
+      <td>16. Students respect each other.</td>
+      <td>34.9</td>
+      <td>4.0</td>
+      <td>30.8</td>
+      <td>39.2</td>
+      <td>16.8</td>
+      <td>9.1</td>
+      <td>1.8</td>
+      <td>25.9</td>
+      <td>34.9</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>Heroes</td>
+      <td>17. Adults at this school listen to students' ...</td>
+      <td>38.9</td>
+      <td>6.7</td>
+      <td>32.3</td>
+      <td>38.3</td>
+      <td>15.0</td>
+      <td>7.7</td>
+      <td>2.4</td>
+      <td>22.7</td>
+      <td>38.9</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>Sense of Accomplishment</td>
+      <td>22. Teachers recognize me when I try my best.</td>
+      <td>45.6</td>
+      <td>10.4</td>
+      <td>35.1</td>
+      <td>32.6</td>
+      <td>14.7</td>
+      <td>7.1</td>
+      <td>1.4</td>
+      <td>21.8</td>
+      <td>45.6</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>Sense of Accomplishment</td>
+      <td>23. Teachers let my parents know what I do well.</td>
+      <td>31.3</td>
+      <td>7.1</td>
+      <td>24.1</td>
+      <td>32.4</td>
+      <td>22.6</td>
+      <td>13.8</td>
+      <td>1.6</td>
+      <td>36.4</td>
+      <td>31.3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>Fun &amp; Excitement</td>
+      <td>27. I enjoy being at school.</td>
+      <td>46.4</td>
+      <td>8.7</td>
+      <td>37.6</td>
+      <td>26.4</td>
+      <td>17.5</td>
+      <td>9.7</td>
+      <td>0.7</td>
+      <td>27.2</td>
+      <td>46.4</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Fun &amp; Excitement</td>
+      <td>29. Teachers make school an exciting place to ...</td>
+      <td>37.9</td>
+      <td>5.1</td>
+      <td>32.8</td>
+      <td>36.9</td>
+      <td>17.8</td>
+      <td>7.3</td>
+      <td>0.1</td>
+      <td>25.1</td>
+      <td>37.9</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>Fun &amp; Excitement</td>
+      <td>30. School is boring.</td>
+      <td>51.8</td>
+      <td>20.5</td>
+      <td>31.3</td>
+      <td>24.4</td>
+      <td>19.1</td>
+      <td>4.6</td>
+      <td>0.8</td>
+      <td>23.7</td>
+      <td>23.7</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>Fun &amp; Excitement</td>
+      <td>32. Teachers have fun at school.</td>
+      <td>44.9</td>
+      <td>8.1</td>
+      <td>36.8</td>
+      <td>38.9</td>
+      <td>10.2</td>
+      <td>6.0</td>
+      <td>1.2</td>
+      <td>16.2</td>
+      <td>44.9</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>Curiosity &amp; Creativity</td>
+      <td>38. My classes help me understand what is happ...</td>
+      <td>36.4</td>
+      <td>4.7</td>
+      <td>31.7</td>
+      <td>26.5</td>
+      <td>24.7</td>
+      <td>12.4</td>
+      <td>0.9</td>
+      <td>37.1</td>
+      <td>36.4</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>Curiosity &amp; Creativity</td>
+      <td>43. Students work with adults to find solution...</td>
+      <td>43.1</td>
+      <td>8.4</td>
+      <td>34.7</td>
+      <td>36.1</td>
+      <td>13.4</td>
+      <td>7.3</td>
+      <td>2.2</td>
+      <td>20.7</td>
+      <td>43.1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>Spirit of Adventure</td>
+      <td>44. I like challenging assignments.</td>
+      <td>40.9</td>
+      <td>8.9</td>
+      <td>32.0</td>
+      <td>27.6</td>
+      <td>21.0</td>
+      <td>10.6</td>
+      <td>0.6</td>
+      <td>31.6</td>
+      <td>40.9</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>Spirit of Adventure</td>
+      <td>46. Students are supportive of each other.</td>
+      <td>43.0</td>
+      <td>4.4</td>
+      <td>38.6</td>
+      <td>34.6</td>
+      <td>14.7</td>
+      <td>7.7</td>
+      <td>0.6</td>
+      <td>22.4</td>
+      <td>43.0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>49</th>
+      <td>Spirit of Adventure</td>
+      <td>50. I am excited to tell my friends when I get...</td>
+      <td>49.2</td>
+      <td>14.0</td>
+      <td>35.1</td>
+      <td>26.4</td>
+      <td>17.9</td>
+      <td>6.5</td>
+      <td>2.0</td>
+      <td>24.4</td>
+      <td>49.2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>50</th>
+      <td>Leadership &amp; Responsibility</td>
+      <td>51. Students have a voice in decision making a...</td>
+      <td>39.8</td>
+      <td>5.1</td>
+      <td>34.6</td>
+      <td>29.6</td>
+      <td>20.3</td>
+      <td>10.3</td>
+      <td>0.6</td>
+      <td>30.6</td>
+      <td>39.8</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>52</th>
+      <td>Leadership &amp; Responsibility</td>
+      <td>53. Other students see me as a leader.</td>
+      <td>33.0</td>
+      <td>6.8</td>
+      <td>26.1</td>
+      <td>41.1</td>
+      <td>16.8</td>
+      <td>9.1</td>
+      <td>0.2</td>
+      <td>25.9</td>
+      <td>33.0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>54</th>
+      <td>Leadership &amp; Responsibility</td>
+      <td>55. Teachers are willing to learn from students.</td>
+      <td>45.4</td>
+      <td>7.1</td>
+      <td>38.3</td>
+      <td>31.0</td>
+      <td>14.5</td>
+      <td>9.0</td>
+      <td>1.9</td>
+      <td>23.5</td>
+      <td>45.4</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>56</th>
+      <td>Leadership &amp; Responsibility</td>
+      <td>57. I know the goals my school is working on t...</td>
+      <td>32.9</td>
+      <td>8.9</td>
+      <td>23.9</td>
+      <td>29.1</td>
+      <td>25.8</td>
+      <td>12.2</td>
+      <td>2.1</td>
+      <td>38.0</td>
+      <td>32.9</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>66</th>
+      <td>Confidence to Take Action</td>
+      <td>67. Students develop programs that improve the...</td>
+      <td>47.0</td>
+      <td>8.9</td>
+      <td>38.1</td>
+      <td>35.4</td>
+      <td>11.6</td>
+      <td>6.0</td>
+      <td>1.6</td>
+      <td>17.6</td>
+      <td>47.0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+The above table shows the questions with more negative answers than positive. However looking at the outcomes many of the responses have a high percentage of Undecided answers, most of them having over a third of the answers being undecided. In order to examine these questions more we need to adjust the percentages of the other responses. My choice is to calculate new percentages for Strongly Agree, Agree, Disagree, and Strongly Agree without the students who chose Undecided. Then we will update the Total Positive column to reflect these updated percentages.
+
+
+```python
+# cols = list(students)
+cols = [ 'Strongly Agree','Agree', 'Disagree', 'Strongly Disagree']
+# cols = [e for e in cols if e not in ('Total Agree','Undecided', 'Did Not Answer', 'Total Disagree', 'Total Positive', 'Wording')]
+students['TotalDecided'] = students[cols].sum(axis=1)
+decidedStudents = students.copy()
+decidedStudents['Strongly Agree'] = round(100*(students['Strongly Agree']/students['TotalDecided']),2)
+decidedStudents['Agree'] = round(100*(students['Agree']/students['TotalDecided']),2)
+decidedStudents['Disagree'] = round(100*(students['Disagree']/students['TotalDecided']),2)
+decidedStudents['Strongly Disagree'] = round(100*(students['Strongly Disagree']/students['TotalDecided']),2)
+decidedStudents['Total Agree'] = decidedStudents['Strongly Agree'] + decidedStudents['Agree']
+decidedStudents['Total Disagree'] = decidedStudents['Strongly Disagree'] + decidedStudents['Disagree']
+decidedStudents['Total Positive'] = np.where(decidedStudents['Wording'] == 0, decidedStudents['Total Agree'],decidedStudents['Total Disagree']) 
+
+
+```
+
+After eliminating the undecided students it looks a lot more positive for the total feeling of the student body. For the most part the students are positive with high confidence levels and low fun and responsibility.
+
+
+```python
+catDecStudent = decidedStudents.groupby('Category')
+catDecStudent['Total Positive'].mean()
+```
+
+
+
+
+    Category
+    Belonging                      72.503750
+    Confidence to Take Action      88.844000
+    Curiosity & Creativity         77.431000
+    Fun & Excitement               69.171429
+    Heroes                         75.974444
+    Leadership & Responsibility    67.010000
+    Sense of Accomplishment        77.563333
+    Spirit of Adventure            74.602857
+    Name: Total Positive, dtype: float64
+
+
+
+
+```python
+posDecStudent = decidedStudents[decidedStudents['Total Positive'] < 50.0]
+
+# posStaff.set_index('Question', inplace=True)
+
+posDecStudent = posDecStudent.reindex(columns=["Category", "Question", "Total Agree", "Strongly Agree", "Agree", "Undecided", 
+                                     "Disagree", "Strongly Disagree","Did Not Answer", "Total Disagree", "Total Positive",
+                                     "Wording"])
+posDecStudent.head(len(posDecStudent))
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Category</th>
+      <th>Question</th>
+      <th>Total Agree</th>
+      <th>Strongly Agree</th>
+      <th>Agree</th>
+      <th>Undecided</th>
+      <th>Disagree</th>
+      <th>Strongly Disagree</th>
+      <th>Did Not Answer</th>
+      <th>Total Disagree</th>
+      <th>Total Positive</th>
+      <th>Wording</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>22</th>
+      <td>Sense of Accomplishment</td>
+      <td>23. Teachers let my parents know what I do well.</td>
+      <td>46.15</td>
+      <td>10.50</td>
+      <td>35.65</td>
+      <td>32.4</td>
+      <td>33.43</td>
+      <td>20.41</td>
+      <td>1.6</td>
+      <td>53.84</td>
+      <td>46.15</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>Fun &amp; Excitement</td>
+      <td>30. School is boring.</td>
+      <td>68.61</td>
+      <td>27.15</td>
+      <td>41.46</td>
+      <td>24.4</td>
+      <td>25.30</td>
+      <td>6.09</td>
+      <td>0.8</td>
+      <td>31.39</td>
+      <td>31.39</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>Curiosity &amp; Creativity</td>
+      <td>38. My classes help me understand what is happ...</td>
+      <td>49.52</td>
+      <td>6.39</td>
+      <td>43.13</td>
+      <td>26.5</td>
+      <td>33.61</td>
+      <td>16.87</td>
+      <td>0.9</td>
+      <td>50.48</td>
+      <td>49.52</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>56</th>
+      <td>Leadership &amp; Responsibility</td>
+      <td>57. I know the goals my school is working on t...</td>
+      <td>46.33</td>
+      <td>12.57</td>
+      <td>33.76</td>
+      <td>29.1</td>
+      <td>36.44</td>
+      <td>17.23</td>
+      <td>2.1</td>
+      <td>53.67</td>
+      <td>46.33</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+After eliminating the undecided students and calculating new percentages based off of the decisive answers provides us with only four questions that have negative total answers. These four topics are things that we can do better as a staff to help students feel more welcome, less bored, and more appreciated. This might not be the best method of determining what the undecided students would have on the population. What we will do in the future is to make sure students are more decisive when filling out the survey as many of the questions had over one third of the population Undecided. Of the students that did answer it was overall pretty positive and also gives the staff direction on the four top priorties to focus our efforts to improve the school culture.
