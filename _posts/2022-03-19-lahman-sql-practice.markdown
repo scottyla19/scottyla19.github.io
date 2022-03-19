@@ -1,0 +1,1074 @@
+```python
+import pandas as pd
+
+allstarfull = pd.read_csv('AllstarFull.csv')
+
+
+```
+
+
+```python
+allstar2022 = allstarfull[allstarfull['yearID'] > 2019]
+allstar2022.to_csv('allstar2022.csv')
+allstar2022
+
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>playerID</th>
+      <th>yearID</th>
+      <th>gameNum</th>
+      <th>gameID</th>
+      <th>teamID</th>
+      <th>lgID</th>
+      <th>GP</th>
+      <th>startingPos</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>5372</th>
+      <td>ohtansh01</td>
+      <td>2021</td>
+      <td>0</td>
+      <td>NLS202107130</td>
+      <td>LAA</td>
+      <td>AL</td>
+      <td>1</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>5373</th>
+      <td>perezsa02</td>
+      <td>2021</td>
+      <td>0</td>
+      <td>NLS202107130</td>
+      <td>KCA</td>
+      <td>AL</td>
+      <td>1</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>5374</th>
+      <td>guerrvl02</td>
+      <td>2021</td>
+      <td>0</td>
+      <td>NLS202107130</td>
+      <td>TOR</td>
+      <td>AL</td>
+      <td>1</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>5375</th>
+      <td>semiema01</td>
+      <td>2021</td>
+      <td>0</td>
+      <td>NLS202107130</td>
+      <td>TOR</td>
+      <td>AL</td>
+      <td>1</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>5376</th>
+      <td>deverra01</td>
+      <td>2021</td>
+      <td>0</td>
+      <td>NLS202107130</td>
+      <td>BOS</td>
+      <td>AL</td>
+      <td>1</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>5449</th>
+      <td>turneju01</td>
+      <td>2021</td>
+      <td>0</td>
+      <td>NLS202107130</td>
+      <td>LAN</td>
+      <td>NL</td>
+      <td>1</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5450</th>
+      <td>turnetr01</td>
+      <td>2021</td>
+      <td>0</td>
+      <td>NLS202107130</td>
+      <td>WAS</td>
+      <td>NL</td>
+      <td>1</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5451</th>
+      <td>walketa01</td>
+      <td>2021</td>
+      <td>0</td>
+      <td>NLS202107130</td>
+      <td>NYN</td>
+      <td>NL</td>
+      <td>1</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5452</th>
+      <td>wheelza01</td>
+      <td>2021</td>
+      <td>0</td>
+      <td>NLS202107130</td>
+      <td>PHI</td>
+      <td>NL</td>
+      <td>0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5453</th>
+      <td>woodrbr01</td>
+      <td>2021</td>
+      <td>0</td>
+      <td>NLS202107130</td>
+      <td>MIL</td>
+      <td>NL</td>
+      <td>0</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>82 rows × 8 columns</p>
+</div>
+
+
+
+
+```python
+apps = pd.read_csv('Appearances.csv')
+apps2022 = apps[apps['yearID'] > 2019]
+apps2022.to_csv('apps2022.csv')
+apps
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>yearID</th>
+      <th>teamID</th>
+      <th>lgID</th>
+      <th>playerID</th>
+      <th>G_all</th>
+      <th>GS</th>
+      <th>G_batting</th>
+      <th>G_defense</th>
+      <th>G_p</th>
+      <th>G_c</th>
+      <th>...</th>
+      <th>G_2b</th>
+      <th>G_3b</th>
+      <th>G_ss</th>
+      <th>G_lf</th>
+      <th>G_cf</th>
+      <th>G_rf</th>
+      <th>G_of</th>
+      <th>G_dh</th>
+      <th>G_ph</th>
+      <th>G_pr</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1871</td>
+      <td>TRO</td>
+      <td>NaN</td>
+      <td>abercda01</td>
+      <td>1</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>1.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1871</td>
+      <td>RC1</td>
+      <td>NaN</td>
+      <td>addybo01</td>
+      <td>25</td>
+      <td>25.0</td>
+      <td>25</td>
+      <td>25.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>22</td>
+      <td>0</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1871</td>
+      <td>CL1</td>
+      <td>NaN</td>
+      <td>allisar01</td>
+      <td>29</td>
+      <td>29.0</td>
+      <td>29</td>
+      <td>29.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>29</td>
+      <td>0</td>
+      <td>29</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1871</td>
+      <td>WS3</td>
+      <td>NaN</td>
+      <td>allisdo01</td>
+      <td>27</td>
+      <td>27.0</td>
+      <td>27</td>
+      <td>27.0</td>
+      <td>0</td>
+      <td>27</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1871</td>
+      <td>RC1</td>
+      <td>NaN</td>
+      <td>ansonca01</td>
+      <td>25</td>
+      <td>25.0</td>
+      <td>25</td>
+      <td>25.0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>...</td>
+      <td>2</td>
+      <td>20</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>110418</th>
+      <td>2021</td>
+      <td>MIL</td>
+      <td>NL</td>
+      <td>zimmejo02</td>
+      <td>2</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>2.0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>110419</th>
+      <td>2021</td>
+      <td>KCA</td>
+      <td>AL</td>
+      <td>zimmeky01</td>
+      <td>52</td>
+      <td>2.0</td>
+      <td>3</td>
+      <td>52.0</td>
+      <td>52</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>110420</th>
+      <td>2021</td>
+      <td>WAS</td>
+      <td>NL</td>
+      <td>zimmery01</td>
+      <td>110</td>
+      <td>48.0</td>
+      <td>110</td>
+      <td>54.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>3.0</td>
+      <td>58.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>110421</th>
+      <td>2021</td>
+      <td>KCA</td>
+      <td>AL</td>
+      <td>zuberty01</td>
+      <td>31</td>
+      <td>0.0</td>
+      <td>1</td>
+      <td>31.0</td>
+      <td>31</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>110422</th>
+      <td>2021</td>
+      <td>TBA</td>
+      <td>AL</td>
+      <td>zuninmi01</td>
+      <td>109</td>
+      <td>97.0</td>
+      <td>109</td>
+      <td>105.0</td>
+      <td>0</td>
+      <td>105</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>5.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>110423 rows × 21 columns</p>
+</div>
+
+
+
+
+```python
+fieldingPost = pd.read_csv('FieldingPost.csv')
+fieldingPost2022 = fieldingPost[fieldingPost['yearID'] > 2019]
+fieldingPost2022.to_csv('fieldingPost2022.csv')
+fieldingPost2022
+
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>playerID</th>
+      <th>yearID</th>
+      <th>teamID</th>
+      <th>lgID</th>
+      <th>round</th>
+      <th>POS</th>
+      <th>G</th>
+      <th>GS</th>
+      <th>InnOuts</th>
+      <th>PO</th>
+      <th>A</th>
+      <th>E</th>
+      <th>DP</th>
+      <th>TP</th>
+      <th>PB</th>
+      <th>SB</th>
+      <th>CS</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>13938</th>
+      <td>abreujo02</td>
+      <td>2020</td>
+      <td>CHA</td>
+      <td>AL</td>
+      <td>ALWC4</td>
+      <td>1B</td>
+      <td>3</td>
+      <td>3</td>
+      <td>75</td>
+      <td>21</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>13939</th>
+      <td>acunaro01</td>
+      <td>2020</td>
+      <td>ATL</td>
+      <td>NL</td>
+      <td>NLCS</td>
+      <td>CF</td>
+      <td>1</td>
+      <td>1</td>
+      <td>9</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>13940</th>
+      <td>acunaro01</td>
+      <td>2020</td>
+      <td>ATL</td>
+      <td>NL</td>
+      <td>NLCS</td>
+      <td>RF</td>
+      <td>7</td>
+      <td>6</td>
+      <td>162</td>
+      <td>14</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>13941</th>
+      <td>acunaro01</td>
+      <td>2020</td>
+      <td>ATL</td>
+      <td>NL</td>
+      <td>NLDS2</td>
+      <td>CF</td>
+      <td>3</td>
+      <td>3</td>
+      <td>81</td>
+      <td>4</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>13942</th>
+      <td>acunaro01</td>
+      <td>2020</td>
+      <td>ATL</td>
+      <td>NL</td>
+      <td>NLWC4</td>
+      <td>CF</td>
+      <td>2</td>
+      <td>2</td>
+      <td>66</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>15058</th>
+      <td>yastrmi01</td>
+      <td>2021</td>
+      <td>SFN</td>
+      <td>NL</td>
+      <td>NLDS2</td>
+      <td>CF</td>
+      <td>3</td>
+      <td>2</td>
+      <td>37</td>
+      <td>4</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>15059</th>
+      <td>yastrmi01</td>
+      <td>2021</td>
+      <td>SFN</td>
+      <td>NL</td>
+      <td>NLDS2</td>
+      <td>RF</td>
+      <td>4</td>
+      <td>2</td>
+      <td>56</td>
+      <td>6</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>15060</th>
+      <td>yelicch01</td>
+      <td>2021</td>
+      <td>MIL</td>
+      <td>NL</td>
+      <td>NLDS1</td>
+      <td>LF</td>
+      <td>4</td>
+      <td>4</td>
+      <td>102</td>
+      <td>8</td>
+      <td>2</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>15061</th>
+      <td>ynoahu01</td>
+      <td>2021</td>
+      <td>ATL</td>
+      <td>NL</td>
+      <td>NLDS1</td>
+      <td>P</td>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>15062</th>
+      <td>zuninmi01</td>
+      <td>2021</td>
+      <td>TBA</td>
+      <td>AL</td>
+      <td>ALDS2</td>
+      <td>C</td>
+      <td>4</td>
+      <td>4</td>
+      <td>117</td>
+      <td>28</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>1125 rows × 17 columns</p>
+</div>
+
+
+
+
+```python
+f = pd.read_csv('fielding2022.csv')
+f
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>playerID</th>
+      <th>yearID</th>
+      <th>stint</th>
+      <th>teamID</th>
+      <th>lgID</th>
+      <th>POS</th>
+      <th>G</th>
+      <th>GS</th>
+      <th>InnOuts</th>
+      <th>PO</th>
+      <th>A</th>
+      <th>E</th>
+      <th>DP</th>
+      <th>PB</th>
+      <th>WP</th>
+      <th>SB</th>
+      <th>CS</th>
+      <th>ZR</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>143046</td>
+      <td>abreual01</td>
+      <td>2020</td>
+      <td>1</td>
+      <td>NYA</td>
+      <td>AL</td>
+      <td>P</td>
+      <td>2</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>143047</td>
+      <td>abreubr01</td>
+      <td>2020</td>
+      <td>1</td>
+      <td>HOU</td>
+      <td>AL</td>
+      <td>P</td>
+      <td>4</td>
+      <td>0.0</td>
+      <td>10.0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>143048</td>
+      <td>abreujo02</td>
+      <td>2020</td>
+      <td>1</td>
+      <td>CHA</td>
+      <td>AL</td>
+      <td>1B</td>
+      <td>54</td>
+      <td>54.0</td>
+      <td>1410.0</td>
+      <td>430</td>
+      <td>27</td>
+      <td>5.0</td>
+      <td>39</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>143049</td>
+      <td>acunaro01</td>
+      <td>2020</td>
+      <td>1</td>
+      <td>ATL</td>
+      <td>NL</td>
+      <td>OF</td>
+      <td>46</td>
+      <td>46.0</td>
+      <td>1130.0</td>
+      <td>102</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>143050</td>
+      <td>adamewi01</td>
+      <td>2020</td>
+      <td>1</td>
+      <td>TBA</td>
+      <td>AL</td>
+      <td>SS</td>
+      <td>53</td>
+      <td>51.0</td>
+      <td>1350.0</td>
+      <td>53</td>
+      <td>131</td>
+      <td>9.0</td>
+      <td>27</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>4029</th>
+      <td>147075</td>
+      <td>zimmejo02</td>
+      <td>2021</td>
+      <td>1</td>
+      <td>MIL</td>
+      <td>NL</td>
+      <td>P</td>
+      <td>2</td>
+      <td>0.0</td>
+      <td>17.0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4030</th>
+      <td>147076</td>
+      <td>zimmeky01</td>
+      <td>2021</td>
+      <td>1</td>
+      <td>KCA</td>
+      <td>AL</td>
+      <td>P</td>
+      <td>52</td>
+      <td>2.0</td>
+      <td>162.0</td>
+      <td>4</td>
+      <td>5</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4031</th>
+      <td>147077</td>
+      <td>zimmery01</td>
+      <td>2021</td>
+      <td>1</td>
+      <td>WAS</td>
+      <td>NL</td>
+      <td>1B</td>
+      <td>54</td>
+      <td>45.0</td>
+      <td>1202.0</td>
+      <td>338</td>
+      <td>15</td>
+      <td>0.0</td>
+      <td>30</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4032</th>
+      <td>147078</td>
+      <td>zuberty01</td>
+      <td>2021</td>
+      <td>1</td>
+      <td>KCA</td>
+      <td>AL</td>
+      <td>P</td>
+      <td>31</td>
+      <td>0.0</td>
+      <td>82.0</td>
+      <td>1</td>
+      <td>3</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4033</th>
+      <td>147079</td>
+      <td>zuninmi01</td>
+      <td>2021</td>
+      <td>1</td>
+      <td>TBA</td>
+      <td>AL</td>
+      <td>C</td>
+      <td>105</td>
+      <td>97.0</td>
+      <td>2581.0</td>
+      <td>909</td>
+      <td>37</td>
+      <td>5.0</td>
+      <td>2</td>
+      <td>10.0</td>
+      <td>NaN</td>
+      <td>47.0</td>
+      <td>13.0</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>4034 rows × 19 columns</p>
+</div>
+
+
